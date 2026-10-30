@@ -48,7 +48,7 @@ You can test without signing up using the **1-Click Demo Accounts** in the top n
 
 | Role | Email | Password | Permissions |
 |---|---|---|---|
-| **Administrator** | `admin@playarena.pk` | `admin123` | Approve/Reject bookings, slot conflict check, toggle payment status, add/remove arenas |
+ 
 | **Player / Customer** | `user@playarena.pk` | `user123` | Browse grounds, filter by city & sport, submit booking requests, track booking status |
 
 ---
