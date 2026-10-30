@@ -1,0 +1,22 @@
+{
+  "name": "playarena-sports-platform",
+  "version": "1.0.0",
+  "description": "PlayArena - Sports Facility Discovery and Booking Platform (Rawalpindi & Skardu)",
+  "scripts": {
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && npm run seed"
+  },
+  "keywords": [
+    "futsal",
+    "sports-booking",
+    "react",
+    "vite",
+    "node",
+    "express",
+    "mongodb",
+    "tailwind"
+  ],
+  "author": "PlayArena Team",
+  "license": "ISC"
+}

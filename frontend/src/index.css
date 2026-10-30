@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased font-sans;
+    min-height: 100vh;
+  }
+}
+
+/* Custom scrollbars and animations */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.turf-pattern {
+  background-color: #064e3b;
+  background-image: radial-gradient(#059669 1px, transparent 1px), radial-gradient(#059669 1px, #064e3b 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+}
