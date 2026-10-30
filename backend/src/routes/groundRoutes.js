@@ -5,7 +5,8 @@ import {
   createGround,
   updateGround,
   deleteGround,
-  checkSlotAvailability
+  checkSlotAvailability,
+  getAllBookings
 } from '../services/store.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 
@@ -39,6 +40,34 @@ router.get('/:id/availability', async (req, res) => {
 
     const availability = await checkSlotAvailability(id, date, startTime, Number(durationHours));
     res.json(availability);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get all booked time ranges for a ground on a specific date (for time-slot UI blocking)
+router.get('/:id/booked-slots', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ message: 'Date query parameter is required.' });
+    }
+
+    const bookings = await getAllBookings({ groundId: id });
+    const bookedOnDate = bookings.filter(b =>
+      b.date === date &&
+      (b.status === 'approved' || b.status === 'pending')
+    );
+
+    const slots = bookedOnDate.map(b => ({
+      startTime: b.startTime,
+      endTime: b.endTime,
+      status: b.status
+    }));
+
+    res.json({ date, slots });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

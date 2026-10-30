@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export function getAuthHeaders() {
   const token = localStorage.getItem('playarena_token');
@@ -8,36 +8,44 @@ export function getAuthHeaders() {
   };
 }
 
+async function request(path, options = {}) {
+  try {
+    const res = await fetch(`${API_BASE}${path}`, options);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message || `Request failed (${res.status})`);
+    }
+    return data;
+  } catch (err) {
+    if (err.name === 'TypeError' || err.message === 'Failed to fetch') {
+      throw new Error('Unable to connect to the backend API. Please make sure the backend server is running on port 5000 (run "npm run start:backend" from root or "npm run dev" inside /backend).');
+    }
+    throw err;
+  }
+}
+
 export const api = {
   // Auth
   async login(email, password) {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    return await request('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Login failed');
-    return data;
   },
 
   async register(userData) {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    return await request('/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Registration failed');
-    return data;
   },
 
   async getMe() {
-    const res = await fetch(`${API_BASE}/auth/me`, {
+    const data = await request('/auth/me', {
       headers: getAuthHeaders()
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to fetch user');
     return data.user;
   },
 
@@ -48,46 +56,37 @@ export const api = {
     if (sport && sport !== 'All') params.append('sport', sport);
     if (search) params.append('search', search);
 
-    const res = await fetch(`${API_BASE}/grounds?${params.toString()}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to load grounds');
+    const data = await request(`/grounds?${params.toString()}`);
     return data.data;
   },
 
   async getGroundById(id) {
-    const res = await fetch(`${API_BASE}/grounds/${id}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to fetch ground');
-    return data;
+    return await request(`/grounds/${id}`);
   },
 
   async checkAvailability(groundId, date, startTime, durationHours) {
     const params = new URLSearchParams({ date, startTime, durationHours });
-    const res = await fetch(`${API_BASE}/grounds/${groundId}/availability?${params.toString()}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Availability check failed');
-    return data;
+    return await request(`/grounds/${groundId}/availability?${params.toString()}`);
+  },
+
+  async getBookedSlots(groundId, date) {
+    return await request(`/grounds/${groundId}/booked-slots?date=${date}`);
   },
 
   async createGround(groundData) {
-    const res = await fetch(`${API_BASE}/grounds`, {
+    const data = await request('/grounds', {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(groundData)
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to create facility');
     return data.data;
   },
 
   async deleteGround(id) {
-    const res = await fetch(`${API_BASE}/grounds/${id}`, {
+    return await request(`/grounds/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to delete facility');
-    return data;
   },
 
   // Bookings
@@ -97,44 +96,33 @@ export const api = {
     if (city && city !== 'All') params.append('city', city);
     if (customerEmail) params.append('customerEmail', customerEmail);
 
-    const res = await fetch(`${API_BASE}/bookings?${params.toString()}`, {
+    const data = await request(`/bookings?${params.toString()}`, {
       headers: getAuthHeaders()
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to load bookings');
     return data.data;
   },
 
   async createBooking(bookingData) {
-    const res = await fetch(`${API_BASE}/bookings`, {
+    return await request('/bookings', {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(bookingData)
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to create booking request');
-    return data;
   },
 
   async updateBookingStatus(id, { status, adminNotes = '', rejectionReason = '' }) {
-    const res = await fetch(`${API_BASE}/bookings/${id}/status`, {
+    return await request(`/bookings/${id}/status`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
       body: JSON.stringify({ status, adminNotes, rejectionReason })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to update booking status');
-    return data;
   },
 
   async updatePaymentStatus(id, paymentStatus) {
-    const res = await fetch(`${API_BASE}/bookings/${id}/payment`, {
+    return await request(`/bookings/${id}/payment`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
       body: JSON.stringify({ paymentStatus })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to update payment status');
-    return data;
   }
 };

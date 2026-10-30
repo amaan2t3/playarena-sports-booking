@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "PlayArena - Sports Facility Discovery and Booking Platform (Rawalpindi & Skardu)",
   "scripts": {
+    "dev": "(cd backend && npm run dev) & (cd frontend && npm run dev)",
     "start:backend": "cd backend && npm run dev",
     "start:frontend": "cd frontend && npm run dev",
     "seed": "cd backend && npm run seed"

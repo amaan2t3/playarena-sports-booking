@@ -15,26 +15,19 @@ import AuthModal from './components/AuthModal';
 import logoImg from './assets/PlayArena Sports Booking Logo.png';
 import {
   Compass,
-  Trophy,
   MapPin,
   Shield,
-  Clock,
-  Banknote,
-  CheckCircle,
-  HelpCircle,
-  Activity,
-  Heart
 } from 'lucide-react';
 
 function MainApp() {
   const { user, isAdmin } = useAuth();
 
   // Navigation State
-  const [activeTab, setActiveTab] = useState('explore'); // 'explore' | 'rules' | 'reviews' | 'my-bookings' | 'admin'
+  const [activeTab, setActiveTab] = useState('explore');
 
   // Filtering State
-  const [selectedCity, setSelectedCity] = useState('All'); // 'All' | 'Rawalpindi' | 'Skardu'
-  const [selectedSport, setSelectedSport] = useState('All'); // 'All' | 'Football' | 'Tennis' | ...
+  const [selectedCity, setSelectedCity] = useState('All');
+  const [selectedSport, setSelectedSport] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
 
@@ -75,7 +68,6 @@ function MainApp() {
     }
   };
 
-  // Re-fetch grounds when filters change
   useEffect(() => {
     loadGrounds();
   }, [selectedCity, selectedSport, searchQuery]);
@@ -93,10 +85,9 @@ function MainApp() {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {/* TAB 1: Explore Grounds & Discovery */}
+        {/* TAB 1: Explore Grounds */}
         {activeTab === 'explore' && (
           <div>
-            {/* Hero Banner with Integrated Search Bar */}
             <Hero
               selectedCity={selectedCity}
               setSelectedCity={setSelectedCity}
@@ -109,9 +100,7 @@ function MainApp() {
               onSearch={scrollToGrounds}
             />
 
-            {/* Grounds Discovery Section */}
             <div ref={groundsSectionRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
-              {/* Filter Bar */}
               <Filters
                 selectedCity={selectedCity}
                 setSelectedCity={setSelectedCity}
@@ -122,20 +111,13 @@ function MainApp() {
                 totalResults={grounds.length}
               />
 
-              {/* Error State */}
               {groundsError && (
                 <div className="p-4 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 text-sm mb-6 flex items-center justify-between">
                   <span>{groundsError}</span>
-                  <button
-                    onClick={loadGrounds}
-                    className="font-bold underline ml-2 text-amber-800"
-                  >
-                    Retry
-                  </button>
+                  <button onClick={loadGrounds} className="font-bold underline ml-2 text-amber-800">Retry</button>
                 </div>
               )}
 
-              {/* Loading Skeletons */}
               {loadingGrounds ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {[...Array(6)].map((_, i) => (
@@ -148,26 +130,20 @@ function MainApp() {
                   ))}
                 </div>
               ) : grounds.length === 0 ? (
-                /* Empty Results */
                 <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
                   <Compass className="mx-auto text-slate-300" size={44} />
                   <h3 className="text-lg font-bold text-slate-800">No sports facilities found</h3>
                   <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
-                    We couldn't find any grounds matching your current filters ({selectedCity !== 'All' ? selectedCity : ''} {selectedSport !== 'All' ? selectedSport : ''} {searchQuery ? `"${searchQuery}"` : ''}).
+                    We couldn't find any grounds matching your current filters.
                   </p>
                   <button
-                    onClick={() => {
-                      setSelectedCity('All');
-                      setSelectedSport('All');
-                      setSearchQuery('');
-                    }}
-                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs"
+                    onClick={() => { setSelectedCity('All'); setSelectedSport('All'); setSearchQuery(''); }}
+                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition"
                   >
                     Reset All Filters
                   </button>
                 </div>
               ) : (
-                /* Grounds Grid */
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {grounds.map((ground) => (
                     <GroundCard
@@ -180,7 +156,6 @@ function MainApp() {
                 </div>
               )}
 
-              {/* Verified Player Reviews Showcase */}
               <div className="mt-14 pt-10 border-t border-slate-200/90">
                 <ReviewsSection onBookGround={scrollToGrounds} />
               </div>
@@ -209,7 +184,7 @@ function MainApp() {
           </div>
         )}
 
-        {/* TAB 4: Admin Panel */}
+        {/* TAB 5: Admin Panel — always visible, login gated */}
         {activeTab === 'admin' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             {isAdmin ? (
@@ -219,14 +194,17 @@ function MainApp() {
                 <Shield className="mx-auto text-amber-500" size={40} />
                 <h3 className="text-lg font-bold text-slate-800">Administrator Access Required</h3>
                 <p className="text-xs text-slate-500">
-                  You must be logged in as an administrator to approve booking requests and manage facilities.
+                  Please sign in with the admin account to view and manage booking requests.
                 </p>
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
                   className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition"
                 >
-                  Sign In with Admin Account
+                  Sign In as Admin
                 </button>
+                <div className="text-[11px] text-slate-400 mt-2">
+                  Default: <code className="text-emerald-600">admin@playarena.pk</code> / <code className="text-emerald-600">admin123</code>
+                </div>
               </div>
             )}
           </div>
@@ -239,11 +217,7 @@ function MainApp() {
           <div className="space-y-3">
             <div className="flex items-center gap-2.5">
               <div className="p-1 rounded-xl bg-white/95 inline-flex items-center justify-center">
-                <img
-                  src={logoImg}
-                  alt="PlayArena"
-                  className="h-8 w-auto object-contain"
-                />
+                <img src={logoImg} alt="PlayArena" className="h-8 w-auto object-contain" />
               </div>
               <span className="text-lg font-bold text-white">PlayArena</span>
             </div>
@@ -251,7 +225,7 @@ function MainApp() {
               Sports facility discovery & booking platform connecting teams, athletes, and local turf grounds across Rawalpindi and Skardu.
             </p>
             <div className="text-[11px] text-emerald-400 font-semibold">
-              • Admin Approval • Pay at Ground • Flexible Duration
+              • No Login Required • Pay at Ground • Instant WhatsApp Alerts
             </div>
           </div>
 
@@ -283,19 +257,17 @@ function MainApp() {
           <div>
             <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Platform Guarantees</h4>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Automatic slot overlap prevention eliminates double-booking disputes. Flexible durations fit your team's exact match timing.
+              Automatic slot overlap prevention eliminates double-booking. Admin receives instant WhatsApp alerts for every new request.
             </p>
             <div className="mt-3 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-[11px] text-slate-300">
-              Demo Admin: <code className="text-emerald-400">admin@playarena.pk</code>
+              Admin: <code className="text-emerald-400">admin@playarena.pk</code>
             </div>
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
           <div>© 2026 PlayArena Sports Platform. All rights reserved.</div>
-          <div className="flex items-center gap-1">
-            <span>Crafted with clean aesthetics & field green accents</span>
-          </div>
+          <div>Crafted with clean aesthetics & field green accents</div>
         </div>
       </footer>
 
@@ -314,12 +286,16 @@ function MainApp() {
           groundsList={grounds}
           initialDate={selectedDate}
           onClose={() => setSelectedGroundForBooking(null)}
-          onBookingSuccess={() => {
+          onBookingSuccess={(booking) => {
+            // Close modal, refresh grounds, then switch to admin panel
+            setSelectedGroundForBooking(null);
             loadGrounds();
+            setActiveTab('admin');
           }}
         />
       )}
 
+      {/* Admin-only auth modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}

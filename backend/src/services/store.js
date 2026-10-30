@@ -197,8 +197,9 @@ export async function deleteGround(id) {
 // ---------------- BOOKINGS OPERATIONS & AVAILABILITY ----------------
 
 /**
- * Checks for conflict against CONFIRMED (approved) bookings on the same ground and date.
- * Also returns pending bookings for administrative visibility.
+ * Checks for conflict against CONFIRMED (approved) AND PENDING bookings on the same ground and date.
+ * A slot is considered unavailable if any approved OR pending booking overlaps it.
+ * This prevents players from selecting already-taken time ranges.
  */
 export async function checkSlotAvailability(groundId, date, startTime, durationHours, excludeBookingId = null) {
   const endTime = calculateEndTime(startTime, durationHours);
@@ -221,11 +222,13 @@ export async function checkSlotAvailability(groundId, date, startTime, durationH
     areSlotsOverlapping(startTime, endTime, b.startTime, b.endTime)
   );
 
+  // Slot is unavailable if there's any approved OR pending overlap
   return {
-    isAvailable: overlappingApproved.length === 0,
+    isAvailable: overlappingApproved.length === 0 && overlappingPending.length === 0,
     endTime,
     conflicts: overlappingApproved,
-    pendingOverlaps: overlappingPending
+    pendingOverlaps: overlappingPending,
+    isBlockedByPending: overlappingApproved.length === 0 && overlappingPending.length > 0
   };
 }
 

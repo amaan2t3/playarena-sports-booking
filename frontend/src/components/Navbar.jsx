@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, MapPin, Calendar, User, LogOut, Shield, Compass, Sparkles, Star } from 'lucide-react';
+import { ShieldCheck, MapPin, Calendar, LogOut, Shield, Compass, Sparkles, Star } from 'lucide-react';
 import logoImg from '../assets/PlayArena Sports Booking Logo.png';
 
 export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelectedCity, onOpenAuth }) {
@@ -8,33 +8,36 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-      {/* Top Announcement & Quick Demo Switcher Bar */}
+      {/* Admin Quick-Access Bar (only for admin switching) */}
       <div className="bg-emerald-950 text-emerald-100 text-xs py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="font-medium text-emerald-300">PlayArena Live:</span>
-            <span>Discovering premier verified sports arenas in Rawalpindi & Skardu</span>
+            <span>Premier verified sports arenas in Rawalpindi & Skardu — No login required to book</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-emerald-400/80 hidden sm:inline">1-Click Demo Accounts:</span>
-            <button
-              onClick={() => quickLoginAs('admin')}
-              className={`px-2 py-0.5 rounded text-xs transition font-semibold flex items-center gap-1 ${
-                isAdmin ? 'bg-emerald-500 text-white' : 'bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200'
-              }`}
-            >
-              <Shield size={12} /> Admin (Approvals)
-            </button>
-            <button
-              onClick={() => quickLoginAs('customer')}
-              className={`px-2 py-0.5 rounded text-xs transition font-semibold flex items-center gap-1 ${
-                user && !isAdmin ? 'bg-emerald-500 text-white' : 'bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200'
-              }`}
-            >
-              <User size={12} /> Customer
-            </button>
+            {isAdmin ? (
+              <div className="flex items-center gap-2">
+                <span className="text-emerald-300 font-semibold flex items-center gap-1">
+                  <Shield size={12} /> Admin Mode
+                </span>
+                <button
+                  onClick={logout}
+                  className="px-2 py-0.5 rounded text-xs bg-red-900/60 hover:bg-red-800 text-red-300 transition font-semibold flex items-center gap-1"
+                >
+                  <LogOut size={11} /> Exit Admin
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => quickLoginAs('admin')}
+                className="px-2 py-0.5 rounded text-xs bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 transition font-semibold flex items-center gap-1"
+              >
+                <Shield size={12} /> Admin Login
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -135,48 +138,20 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
               <span>My Bookings</span>
             </button>
 
-            {isAdmin && (
-              <button
-                onClick={() => setActiveTab('admin')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
-                  activeTab === 'admin'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'bg-emerald-100/70 text-emerald-800 hover:bg-emerald-200/70'
-                }`}
-              >
-                <ShieldCheck size={16} />
-                <span>Admin Panel</span>
-              </button>
-            )}
-
-            {/* User Profile / Auth Button */}
-            <div className="ml-2 pl-2 border-l border-slate-200 flex items-center gap-2">
-              {user ? (
-                <div className="flex items-center gap-2">
-                  <div className="hidden sm:block text-right">
-                    <span className="block text-xs font-bold text-slate-800">{user.name}</span>
-                    <span className="block text-[10px] text-emerald-600 uppercase font-semibold">
-                      {user.role === 'admin' ? 'Administrator' : 'Player'}
-                    </span>
-                  </div>
-                  <button
-                    onClick={logout}
-                    title="Log out"
-                    className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
-                  >
-                    <LogOut size={16} />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={onOpenAuth}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm shadow-emerald-600/30 flex items-center gap-1.5"
-                >
-                  <User size={15} />
-                  <span>Sign In</span>
-                </button>
-              )}
-            </div>
+            {/* Admin Panel button — always shown, login gated inside */}
+            <button
+              onClick={() => setActiveTab('admin')}
+              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'admin'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : isAdmin
+                  ? 'bg-emerald-100/70 text-emerald-800 hover:bg-emerald-200/70'
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+              }`}
+            >
+              <ShieldCheck size={16} />
+              <span>Admin Panel</span>
+            </button>
           </nav>
         </div>
       </div>
