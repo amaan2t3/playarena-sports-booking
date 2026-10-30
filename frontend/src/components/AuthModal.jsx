@@ -71,7 +71,7 @@ export default function AuthModal({ isOpen, onClose }) {
             <span>Quick Admin Login (Demo)</span>
           </button>
           <p className="text-center text-[11px] text-slate-400 mt-2 mb-0">
-            admin@playarena.pk / admin123
+
           </p>
         </div>
 
