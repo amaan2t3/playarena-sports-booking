@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import {
   X,
   Calendar,
@@ -95,6 +96,7 @@ function sendWhatsAppToPlayer(playerPhone, booking) {
 const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP || '+923001234567';
 
 export default function BookingModal({ ground, groundsList, initialDate, onClose, onBookingSuccess }) {
+  const { user } = useAuth();
   const [selectedGround, setSelectedGround] = useState(ground || (groundsList && groundsList[0]));
   const todayStr = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(initialDate || todayStr);
@@ -106,9 +108,9 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
   const [loadingSlots, setLoadingSlots] = useState(false);
 
   // Customer contact
-  const [customerName, setCustomerName] = useState('');
-  const [customerPhone, setCustomerPhone] = useState('+92 3');
-  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerName, setCustomerName] = useState(user?.name || '');
+  const [customerPhone, setCustomerPhone] = useState(user?.phone || '+92 3');
+  const [customerEmail, setCustomerEmail] = useState(user?.email || '');
 
   // Availability check
   const [checkingAvailability, setCheckingAvailability] = useState(false);

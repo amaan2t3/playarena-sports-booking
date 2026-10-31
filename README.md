@@ -105,17 +105,12 @@ PlayArena is being developed as a practical real-world MERN Stack project with a
 - Express.js
 - RESTful APIs
 
-<<<<<<< HEAD
-| Role | Email | Password | Permissions |
-|---|---|---|---|
- 
-| **Player / Customer** | `user@playarena.pk` | `user123` | Browse grounds, filter by city & sport, submit booking requests, track booking status |
-=======
 ### Database & Authentication
 <p>
   <img src="https://skillicons.dev/icons?i=mongodb" alt="MongoDB" />
 </p>
->>>>>>> 0fea13f (Add professional project README)
+
+Customers can create accounts to track their bookings. Administrator credentials are configured through the deployment environment and are not displayed in the application.
 
 - MongoDB
 - Mongoose
@@ -310,9 +305,9 @@ Never commit your actual `.env` file or database credentials to GitHub.
 
 ## 🚀 Vercel Deployment
 
-The repository root contains the Vercel configuration for both the frontend and API. In the Vercel project settings, set **Root Directory** to the repository root (`.`), then redeploy. The frontend calls the same-origin `/api` endpoints, which are handled by the serverless Express API.
+The repository root contains the Vercel configuration for both the frontend and API. In the Vercel project settings, set **Root Directory** to the repository root (`.`), then redeploy. Set `MONGODB_URI`, a strong `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` in the Vercel environment variables. The first deployment seeds the facility list and creates the administrator account from those values. The frontend calls same-origin `/api` endpoints handled by the serverless Express API.
 
-The grounds endpoint uses the included seed data when MongoDB is not configured. The current store is in-memory, so configure persistent storage before relying on bookings or admin changes in production.
+The frontend supports customer registration and sign-in, and admins can review bookings, approve or reject requests, update ground information, and manage ground photo URLs. Local development without `MONGODB_URI` uses in-memory demo data; production requires MongoDB so changes persist across serverless invocations.
 
 ## 🤝 Contributing
 

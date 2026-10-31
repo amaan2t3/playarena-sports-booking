@@ -12,6 +12,21 @@ import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
+function validateGroundData(data) {
+  const { images } = data;
+  if (images !== undefined && (!Array.isArray(images) || images.some(image => {
+    try {
+      const url = new URL(image);
+      return !['http:', 'https:'].includes(url.protocol);
+    } catch {
+      return true;
+    }
+  }))) {
+    return 'Ground images must be an array of valid HTTP or HTTPS URLs.';
+  }
+  return null;
+}
+
 // List grounds with filters for City and Sport
 router.get('/', async (req, res) => {
   try {
@@ -90,9 +105,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { name, city, sport, address, hourlyRate, description } = req.body;
-    if (!name || !city || !sport || !address || !hourlyRate) {
+    if (!name || !city || !sport || !address || !Number.isFinite(Number(hourlyRate)) || Number(hourlyRate) <= 0) {
       return res.status(400).json({ message: 'Missing required ground facility details.' });
     }
+    const validationError = validateGroundData(req.body);
+    if (validationError) return res.status(400).json({ message: validationError });
 
     const created = await createGround(req.body);
     res.status(201).json({ message: 'Ground facility added successfully', data: created });
@@ -104,6 +121,8 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
 // Admin: Update ground facility
 router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
+    const validationError = validateGroundData(req.body);
+    if (validationError) return res.status(400).json({ message: validationError });
     const updated = await updateGround(req.params.id, req.body);
     if (!updated) {
       return res.status(404).json({ message: 'Ground facility not found' });

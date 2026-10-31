@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 function MainApp() {
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
 
   // Navigation State
   const [activeTab, setActiveTab] = useState('explore');
@@ -40,6 +40,12 @@ function MainApp() {
   const [selectedGroundForDetail, setSelectedGroundForDetail] = useState(null);
   const [selectedGroundForBooking, setSelectedGroundForBooking] = useState(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('customer');
+
+  const openAuth = (mode) => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
 
   // Grounds Section Ref for Smooth Scrolling
   const groundsSectionRef = useRef(null);
@@ -80,7 +86,7 @@ function MainApp() {
         setActiveTab={setActiveTab}
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenAuth={openAuth}
       />
 
       {/* Main Content Area */}
@@ -194,17 +200,14 @@ function MainApp() {
                 <Shield className="mx-auto text-amber-500" size={40} />
                 <h3 className="text-lg font-bold text-slate-800">Administrator Access Required</h3>
                 <p className="text-xs text-slate-500">
-                  Please sign in with the admin account to view and manage booking requests.
+                  Please sign in with your administrator account to review bookings and manage facilities.
                 </p>
                 <button
-                  onClick={() => setIsAuthModalOpen(true)}
+                  onClick={() => openAuth('admin')}
                   className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition"
                 >
                   Sign In as Admin
                 </button>
-                <div className="text-[11px] text-slate-400 mt-2">
-                  Default: <code className="text-emerald-600">admin@playarena.pk</code> / <code className="text-emerald-600">admin123</code>
-                </div>
               </div>
             )}
           </div>
@@ -260,7 +263,7 @@ function MainApp() {
               Automatic slot overlap prevention eliminates double-booking. Admin receives instant WhatsApp alerts for every new request.
             </p>
             <div className="mt-3 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-[11px] text-slate-300">
-              Admin: <code className="text-emerald-400">admin@playarena.pk</code>
+              Administrator access is restricted to authorized accounts.
             </div>
           </div>
         </div>
@@ -297,7 +300,9 @@ function MainApp() {
 
       {/* Admin-only auth modal */}
       <AuthModal
+        key={authMode}
         isOpen={isAuthModalOpen}
+        initialMode={authMode}
         onClose={() => setIsAuthModalOpen(false)}
       />
     </div>

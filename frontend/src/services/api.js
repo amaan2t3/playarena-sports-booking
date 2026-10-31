@@ -82,6 +82,15 @@ export const api = {
     return data.data;
   },
 
+  async updateGround(id, groundData) {
+    const data = await request(`/grounds/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(groundData)
+    });
+    return data.data;
+  },
+
   async deleteGround(id) {
     return await request(`/grounds/${id}`, {
       method: 'DELETE',

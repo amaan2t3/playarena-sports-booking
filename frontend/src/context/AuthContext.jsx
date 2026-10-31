@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api';
 
 const AuthContext = createContext(null);
@@ -7,6 +7,12 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem('playarena_token') || null);
   const [loading, setLoading] = useState(true);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('playarena_token');
+    setToken(null);
+    setUser(null);
+  }, []);
 
   useEffect(() => {
     async function loadUser() {
@@ -22,7 +28,7 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
     loadUser();
-  }, [token]);
+  }, [token, logout]);
 
   const login = async (email, password) => {
     const data = await api.login(email, password);
@@ -40,24 +46,10 @@ export function AuthProvider({ children }) {
     return data.user;
   };
 
-  const logout = () => {
-    localStorage.removeItem('playarena_token');
-    setToken(null);
-    setUser(null);
-  };
-
-  const quickLoginAs = async (role) => {
-    if (role === 'admin') {
-      return await login('admin@playarena.pk', 'admin123');
-    } else {
-      return await login('user@playarena.pk', 'user123');
-    }
-  };
-
   const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, token, isAdmin, loading, login, register, logout, quickLoginAs }}>
+    <AuthContext.Provider value={{ user, token, isAdmin, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

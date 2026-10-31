@@ -5,15 +5,23 @@ import { findUserByEmail, createUser } from '../services/store.js';
 import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'playarena_super_secret_jwt_key_2026_sports';
+function getJwtSecret() {
+  if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is required in production.');
+  }
+  return process.env.JWT_SECRET || 'playarena_development_only_secret';
+}
 
 // Register
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password, phone, city } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name?.trim() || !email?.trim() || !password) {
       return res.status(400).json({ message: 'Name, email, and password are required.' });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters.' });
     }
 
     const existingUser = await findUserByEmail(email);
@@ -32,7 +40,7 @@ router.post('/register', async (req, res) => {
 
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email, role: newUser.role, name: newUser.name },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '7d' }
     );
 
@@ -43,6 +51,9 @@ router.post('/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Registration error:', error);
+    if (error.code === 11000) {
+      return res.status(409).json({ message: 'An account already exists with this email address.' });
+    }
     res.status(500).json({ message: error.message || 'Server error during registration.' });
   }
 });
@@ -68,7 +79,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, name: user.name },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '7d' }
     );
 

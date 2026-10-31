@@ -14,11 +14,9 @@ router.get('/', optionalAuth, async (req, res) => {
   try {
     const { status, groundId, city, customerEmail } = req.query;
 
-    let filterEmail = customerEmail;
-    // If logged in as customer and no specific admin query, scope to user's email
-    if (req.user && req.user.role === 'customer' && !customerEmail) {
-      filterEmail = req.user.email;
-    }
+    const filterEmail = req.user?.role === 'admin'
+      ? customerEmail
+      : req.user?.email || customerEmail;
 
     const bookings = await getAllBookings({
       status,
@@ -40,6 +38,9 @@ router.get('/:id', optionalAuth, async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: 'Booking request not found' });
     }
+    if (!req.user || (req.user.role !== 'admin' && booking.customerEmail !== req.user.email)) {
+      return res.status(404).json({ message: 'Booking request not found' });
+    }
     res.json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -59,8 +60,11 @@ router.post('/', optionalAuth, async (req, res) => {
       durationHours
     } = req.body;
 
+    const bookingName = req.user?.name || customerName;
+    const bookingEmail = req.user?.email || customerEmail;
+
     // Validation
-    if (!groundId || !customerName || !customerEmail || !customerPhone || !date || !startTime || !durationHours) {
+    if (!groundId || !bookingName || !bookingEmail || !customerPhone || !date || !startTime || !durationHours) {
       return res.status(400).json({
         message: 'Missing required booking fields. Please provide ground, your contact information, date, start time, and duration.'
       });
@@ -84,8 +88,8 @@ router.post('/', optionalAuth, async (req, res) => {
     const newBooking = await createBooking({
       groundId,
       userId: req.user ? req.user.id : null,
-      customerName,
-      customerEmail,
+      customerName: bookingName,
+      customerEmail: bookingEmail,
       customerPhone,
       date,
       startTime,

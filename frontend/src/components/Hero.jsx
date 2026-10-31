@@ -3,11 +3,7 @@ import { Search, MapPin, Calendar, ChevronDown, ShieldCheck, Banknote, Clock, Tr
 import logoImg from '../assets/PlayArena Sports Booking Logo.png';
 
 const HERO_BACKGROUNDS = [
-  {
-    url: 'https://i.pinimg.com/736x/e9/7a/c9/e97ac96fb8f174a604c6c3d0993576f0.jpg',
-    title: '5G FIFA Futsal Pitch',
-    sport: 'Football'
-  },
+ 
 
   {
     url: 'https://i.pinimg.com/736x/b2/d7/51/b2d751501bc7e5f25a5f7d99516df84c.jpg',
@@ -18,6 +14,11 @@ const HERO_BACKGROUNDS = [
     url: 'https://i.pinimg.com/736x/4a/d1/93/4ad193e18f59aa889d9fcbb4640ae64d.jpg',
     title: 'Alpine Mountain Stadium',
     sport: 'Skardu'
+  },
+   {
+    url: 'https://i.pinimg.com/736x/e9/7a/c9/e97ac96fb8f174a604c6c3d0993576f0.jpg',
+    title: '5G FIFA Futsal Pitch',
+    sport: 'Football'
   },
   {
     url: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=2000&q=80',

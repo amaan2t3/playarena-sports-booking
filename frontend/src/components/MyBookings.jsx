@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import {
@@ -20,26 +20,27 @@ export default function MyBookings({ onBookNew }) {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    if (user?.email) {
-      setEmailInput(user.email);
-      fetchBookings(user.email);
-    }
-  }, [user]);
-
-  const fetchBookings = async (email) => {
+  const fetchBookings = useCallback(async (email) => {
     setLoading(true);
     setSearched(true);
+    setErrorMessage('');
     try {
-      const data = await api.getBookings({ customerEmail: email });
+      const data = await api.getBookings({ customerEmail: user ? '' : email });
       setBookings(data);
     } catch (err) {
-      console.error('Failed to load bookings:', err);
+      setErrorMessage(err.message || 'Unable to load your bookings right now.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user?.email) {
+      fetchBookings(user.email);
+    }
+  }, [user?.email, fetchBookings]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -62,14 +63,15 @@ export default function MyBookings({ onBookNew }) {
           </p>
         </div>
 
-        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 pt-2">
+        <form onSubmit={handleSearch} className="flex flex-col gap-3 pt-2 sm:flex-row">
           <div className="relative flex-1">
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="email"
               required
-              value={emailInput}
+              value={user?.email || emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
+              readOnly={Boolean(user)}
               placeholder="Enter your email to find your reservations..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
             />
@@ -81,13 +83,17 @@ export default function MyBookings({ onBookNew }) {
             className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-600/30 transition flex items-center justify-center gap-2"
           >
             {loading ? <RefreshCw size={15} className="animate-spin" /> : <Search size={15} />}
-            <span>Find Bookings</span>
+            <span>{user ? 'Refresh My Bookings' : 'Find Bookings'}</span>
           </button>
         </form>
       </div>
 
       {/* Bookings Display */}
-      {loading ? (
+      {errorMessage ? (
+        <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
+          {errorMessage}
+        </div>
+      ) : loading ? (
         <div className="text-center py-12 text-slate-500 text-sm">Loading your bookings...</div>
       ) : searched && bookings.length === 0 ? (
         <div className="bg-white rounded-3xl p-10 text-center border border-slate-200 space-y-3">

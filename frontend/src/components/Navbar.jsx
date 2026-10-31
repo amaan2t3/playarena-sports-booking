@@ -1,10 +1,10 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, MapPin, Calendar, LogOut, Shield, Compass, Sparkles, Star } from 'lucide-react';
+import { ShieldCheck, MapPin, Calendar, LogOut, Shield, Compass, Sparkles, Star, UserRound } from 'lucide-react';
 import logoImg from '../assets/PlayArena Sports Booking Logo.png';
 
 export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelectedCity, onOpenAuth }) {
-  const { user, isAdmin, logout, quickLoginAs } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
@@ -18,25 +18,34 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
           </div>
 
           <div className="flex items-center gap-2">
-            {isAdmin ? (
+            {user ? (
               <div className="flex items-center gap-2">
-                <span className="text-emerald-300 font-semibold flex items-center gap-1">
-                  <Shield size={12} /> Admin Mode
+                <span className="hidden max-w-36 truncate font-semibold text-emerald-200 sm:inline">
+                  {isAdmin ? <Shield size={12} className="mr-1 inline" /> : <UserRound size={12} className="mr-1 inline" />}
+                  {user.name}
                 </span>
                 <button
                   onClick={logout}
-                  className="px-2 py-0.5 rounded text-xs bg-red-900/60 hover:bg-red-800 text-red-300 transition font-semibold flex items-center gap-1"
+                  className="flex items-center gap-1 rounded bg-red-900/60 px-2 py-0.5 text-xs font-semibold text-red-200 transition hover:bg-red-800"
                 >
-                  <LogOut size={11} /> Exit Admin
+                  <LogOut size={11} /> Sign out
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => quickLoginAs('admin')}
-                className="px-2 py-0.5 rounded text-xs bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 transition font-semibold flex items-center gap-1"
-              >
-                <Shield size={12} /> Admin Login
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onOpenAuth('customer')}
+                  className="flex items-center gap-1 rounded bg-emerald-900/80 px-2 py-0.5 text-xs font-semibold text-emerald-200 transition hover:bg-emerald-800"
+                >
+                  <UserRound size={12} /> User Sign In
+                </button>
+                <button
+                  onClick={() => onOpenAuth('admin')}
+                  className="flex items-center gap-1 rounded bg-emerald-900/80 px-2 py-0.5 text-xs font-semibold text-emerald-200 transition hover:bg-emerald-800"
+                >
+                  <Shield size={12} /> Admin Sign In
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -145,7 +154,7 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
             {/* Admin Panel button — always shown, login gated inside */}
             <button
               aria-label="Admin panel"
-              onClick={() => setActiveTab('admin')}
+              onClick={() => isAdmin ? setActiveTab('admin') : onOpenAuth('admin')}
               className={`shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 ${
                 activeTab === 'admin'
                   ? 'bg-emerald-600 text-white shadow-sm'
@@ -155,7 +164,7 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
               }`}
             >
               <ShieldCheck size={16} />
-              <span className="hidden sm:inline">Admin Panel</span>
+              <span className="hidden sm:inline">{isAdmin ? 'Admin Panel' : 'Admin Sign In'}</span>
             </button>
           </nav>
         </div>

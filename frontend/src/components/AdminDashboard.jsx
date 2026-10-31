@@ -12,9 +12,22 @@ import {
   AlertTriangle,
   RefreshCw,
   Search,
-  Filter,
-  Users
+  Pencil
 } from 'lucide-react';
+
+const EMPTY_GROUND = {
+  name: '',
+  city: 'Rawalpindi',
+  sport: 'Football',
+  address: '',
+  hourlyRate: 4000,
+  openingTime: '06:00',
+  closingTime: '23:00',
+  description: '',
+  amenities: '5G Turf, Floodlights, Parking, Changing Rooms',
+  images: 'https://images.unsplash.com/photo-1529900241451-b69c45f47055?auto=format&fit=crop&w=1200&q=80',
+  isFeatured: false
+};
 
 export default function AdminDashboard({ onRefreshGrounds }) {
   const [bookings, setBookings] = useState([]);
@@ -32,18 +45,8 @@ export default function AdminDashboard({ onRefreshGrounds }) {
   const [adminTab, setAdminTab] = useState('requests'); // 'requests' | 'grounds' | 'add-ground'
 
   // New Ground Form state
-  const [newGround, setNewGround] = useState({
-    name: '',
-    city: 'Rawalpindi',
-    sport: 'Football',
-    address: '',
-    hourlyRate: 4000,
-    openingTime: '06:00',
-    closingTime: '23:00',
-    description: '',
-    amenities: '5G Turf, Floodlights, Parking, Changing Rooms',
-    images: 'https://images.unsplash.com/photo-1529900241451-b69c45f47055?auto=format&fit=crop&w=1200&q=80'
-  });
+  const [newGround, setNewGround] = useState(EMPTY_GROUND);
+  const [editingGroundId, setEditingGroundId] = useState(null);
   const [creatingGround, setCreatingGround] = useState(false);
 
   useEffect(() => {
@@ -127,7 +130,8 @@ export default function AdminDashboard({ onRefreshGrounds }) {
         closingTime: newGround.closingTime,
         description: newGround.description,
         amenities: newGround.amenities.split(',').map(s => s.trim()).filter(Boolean),
-        images: newGround.images.split(',').map(s => s.trim()).filter(Boolean),
+        images: newGround.images.split(/\n/).map(s => s.trim()).filter(Boolean),
+        isFeatured: newGround.isFeatured,
         rules: [
           'Pay at reception desk upon arrival',
           'Arrive 10 minutes prior to match kickoff',
@@ -135,29 +139,47 @@ export default function AdminDashboard({ onRefreshGrounds }) {
         ]
       };
 
-      await api.createGround(payload);
-      setSuccessMsg(`New arena "${newGround.name}" registered successfully!`);
+      if (editingGroundId) {
+        await api.updateGround(editingGroundId, payload);
+        setSuccessMsg(`Arena "${newGround.name}" updated successfully.`);
+      } else {
+        await api.createGround(payload);
+        setSuccessMsg(`New arena "${newGround.name}" registered successfully!`);
+      }
       setAdminTab('grounds');
+      setEditingGroundId(null);
       await loadData();
       if (onRefreshGrounds) onRefreshGrounds();
-      // Reset form
-      setNewGround({
-        name: '',
-        city: 'Rawalpindi',
-        sport: 'Football',
-        address: '',
-        hourlyRate: 4000,
-        openingTime: '06:00',
-        closingTime: '23:00',
-        description: '',
-        amenities: '5G Turf, Floodlights, Parking, Changing Rooms',
-        images: 'https://images.unsplash.com/photo-1529900241451-b69c45f47055?auto=format&fit=crop&w=1200&q=80'
-      });
+      setNewGround(EMPTY_GROUND);
     } catch (err) {
       setErrorMsg(err.message || 'Failed to create ground facility');
     } finally {
       setCreatingGround(false);
     }
+  };
+
+  const handleEditGround = (ground) => {
+    setEditingGroundId(ground.id);
+    setNewGround({
+      name: ground.name || '',
+      city: ground.city || 'Rawalpindi',
+      sport: ground.sport || 'Football',
+      address: ground.address || '',
+      hourlyRate: ground.hourlyRate || 0,
+      openingTime: ground.openingTime || '06:00',
+      closingTime: ground.closingTime || '23:00',
+      description: ground.description || '',
+      amenities: (ground.amenities || []).join(', '),
+      images: (ground.images || []).join('\n'),
+      isFeatured: Boolean(ground.isFeatured)
+    });
+    setAdminTab('add-ground');
+  };
+
+  const cancelGroundEdit = () => {
+    setEditingGroundId(null);
+    setNewGround(EMPTY_GROUND);
+    setAdminTab('grounds');
   };
 
   // Filtered Bookings
@@ -464,6 +486,9 @@ export default function AdminDashboard({ onRefreshGrounds }) {
           {grounds.map((g) => (
             <div key={g.id} className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex flex-col justify-between space-y-3">
               <div>
+                {g.images?.[0] && (
+                  <img src={g.images[0]} alt={g.name} className="mb-3 h-36 w-full rounded-xl object-cover" />
+                )}
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
                     {g.city} • {g.sport}
@@ -481,15 +506,26 @@ export default function AdminDashboard({ onRefreshGrounds }) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                <span className="text-[11px] text-slate-400 font-mono">ID: {g.id}</span>
-                <button
-                  onClick={() => handleDeleteGround(g.id, g.name)}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition"
-                  title="Delete facility"
-                >
-                  <Trash2 size={16} />
-                </button>
+              <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-2">
+                <span className="min-w-0 truncate font-mono text-[11px] text-slate-400">ID: {g.id}</span>
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    onClick={() => handleEditGround(g)}
+                    className="rounded-lg p-1.5 text-emerald-700 transition hover:bg-emerald-50"
+                    title="Edit facility and images"
+                    aria-label={`Edit ${g.name}`}
+                  >
+                    <Pencil size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteGround(g.id, g.name)}
+                    className="rounded-lg p-1.5 text-red-600 transition hover:bg-red-50"
+                    title="Delete facility"
+                    aria-label={`Delete ${g.name}`}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -500,8 +536,8 @@ export default function AdminDashboard({ onRefreshGrounds }) {
       {adminTab === 'add-ground' && (
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm max-w-2xl mx-auto">
           <div className="mb-5">
-            <h3 className="text-xl font-black text-slate-900">Register New Sports Facility</h3>
-            <p className="text-xs text-slate-500 mt-1">Add a new ground in Rawalpindi or Skardu for customers to discover and book.</p>
+            <h3 className="text-xl font-black text-slate-900">{editingGroundId ? 'Edit Sports Facility' : 'Register New Sports Facility'}</h3>
+            <p className="text-xs text-slate-500 mt-1">{editingGroundId ? 'Update the facility details and its photo URLs.' : 'Add a new ground in Rawalpindi or Skardu for customers to discover and book.'}</p>
           </div>
 
           <form onSubmit={handleCreateGround} className="space-y-4">
@@ -617,20 +653,43 @@ export default function AdminDashboard({ onRefreshGrounds }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Cover Image URL</label>
-              <input
-                type="url"
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ground Image URLs</label>
+              <textarea
+                rows={3}
                 value={newGround.images}
                 onChange={(e) => setNewGround({ ...newGround, images: e.target.value })}
-                placeholder="https://images.unsplash.com/..."
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono text-slate-600"
+                placeholder={'https://example.com/ground-front.jpg\nhttps://example.com/ground-side.jpg'}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs text-slate-600"
               />
+              <p className="mt-1 text-[11px] text-slate-500">Enter one publicly accessible image URL per line. The first image is the card cover.</p>
+              {newGround.images.split('\n').filter(Boolean).length > 0 && (
+                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {newGround.images.split('\n').map((url, index) => url.trim() && (
+                    <img
+                      key={`${index}-${url}`}
+                      src={url.trim()}
+                      alt={`Ground photo preview ${index + 1}`}
+                      className="h-24 w-full rounded-lg border border-slate-200 object-cover"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
+
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <input
+                type="checkbox"
+                checked={newGround.isFeatured}
+                onChange={(e) => setNewGround({ ...newGround, isFeatured: e.target.checked })}
+                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+              />
+              Feature this facility
+            </label>
 
             <div className="pt-3 flex justify-end gap-3">
               <button
                 type="button"
-                onClick={() => setAdminTab('grounds')}
+                onClick={cancelGroundEdit}
                 className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
               >
                 Cancel
@@ -640,7 +699,7 @@ export default function AdminDashboard({ onRefreshGrounds }) {
                 disabled={creatingGround}
                 className="px-6 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/30"
               >
-                {creatingGround ? 'Saving Facility...' : 'Publish Ground Facility'}
+                {creatingGround ? 'Saving Facility...' : editingGroundId ? 'Save Facility Changes' : 'Publish Ground Facility'}
               </button>
             </div>
           </form>
