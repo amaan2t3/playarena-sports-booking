@@ -305,7 +305,7 @@ Never commit your actual `.env` file or database credentials to GitHub.
 
 ## 🚀 Vercel Deployment
 
-The repository root contains the Vercel configuration for both the frontend and API. In the Vercel project settings, set **Root Directory** to the repository root (`.`), then redeploy. Set `MONGODB_URI`, a strong `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` in the Vercel environment variables. The first deployment seeds the facility list and creates the administrator account from those values. The frontend calls same-origin `/api` endpoints handled by the serverless Express API.
+The repository root contains the Vercel configuration for both the frontend and API. In the Vercel project settings, set **Root Directory** to the repository root (`.`), then redeploy. Set `MONGODB_URI`, a strong `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` in the Vercel environment variables. If the MongoDB URI has no database path, the backend uses `MONGODB_DB_NAME` (default: `playarena`). The first deployment seeds the facility list and creates the administrator account from those values. The frontend calls same-origin `/api` endpoints handled by the serverless Express API.
 
 The frontend supports customer registration and sign-in, and admins can review bookings, approve or reject requests, update ground information, and manage ground photo URLs. Local development without `MONGODB_URI` uses in-memory demo data; production requires MongoDB so changes persist across serverless invocations.
 

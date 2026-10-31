@@ -17,6 +17,16 @@ function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function getSafeErrorDetails(error) {
+  const message = String(error.message || 'Unknown error')
+    .replace(/mongodb(?:\+srv)?:\/\/[^\s"'<>]+/gi, 'mongodb+srv://[REDACTED]');
+  return {
+    name: error.name,
+    ...(error.code ? { code: error.code } : {}),
+    message
+  };
+}
+
 export async function initDatabase() {
   if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is required in production.');
@@ -26,14 +36,20 @@ export async function initDatabase() {
   if (mongoUri) {
     try {
       if (mongoose.connection.readyState !== 1) {
-        await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
+        const parsedUri = new URL(mongoUri);
+        const dbName = parsedUri.pathname.replace(/^\/+/, '');
+        await mongoose.connect(mongoUri, {
+          ...(!dbName ? { dbName: process.env.MONGODB_DB_NAME || 'playarena' } : {}),
+          serverSelectionTimeoutMS: 10000
+        });
       }
       isMongooseConnected = true;
       console.log('✅ Connected to MongoDB Atlas successfully.');
       await seedMongoDefaults();
     } catch (err) {
       isMongooseConnected = false;
-      throw new Error(`MongoDB connection failed: ${err.message}`);
+      console.error('MongoDB initialization failed:', getSafeErrorDetails(err));
+      throw new Error('MongoDB initialization failed. Check the connection, database name, and Atlas database-user permissions.');
     }
   } else {
     if (process.env.NODE_ENV === 'production') {
