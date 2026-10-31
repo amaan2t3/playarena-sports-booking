@@ -26,8 +26,8 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/70 backdrop-blur-xs p-0 sm:p-4">
+      <div className="relative flex max-h-[100dvh] w-full max-w-5xl flex-col overflow-hidden border border-slate-200 bg-white shadow-2xl animate-in fade-in zoom-in duration-200 sm:max-h-[calc(100dvh-2rem)] sm:rounded-3xl">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -38,7 +38,7 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
 
         {/* Interactive perspective preview using the ground photos already provided. */}
         <div
-          className="relative h-72 sm:h-[26rem] w-full overflow-hidden bg-slate-950"
+          className="relative h-64 w-full shrink-0 overflow-hidden bg-slate-950 sm:h-80 lg:h-[26rem]"
           onPointerMove={handleViewPointerMove}
           onPointerLeave={() => setViewTilt({ x: 0, y: 0 })}
         >
@@ -57,7 +57,7 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/35 pointer-events-none" />
 
-          <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full border border-white/20 bg-slate-950/55 px-3 py-2 text-xs font-semibold text-white backdrop-blur-md">
+          <div className="absolute top-3 left-3 flex max-w-[calc(100%-5rem)] items-center gap-2 rounded-full border border-white/20 bg-slate-950/55 px-2.5 py-2 text-[10px] font-semibold text-white backdrop-blur-md sm:left-4 sm:top-4 sm:max-w-none sm:px-3 sm:text-xs">
             <Move3D size={15} className="text-emerald-300" />
             <span>3D-style photo preview</span>
             <span className="hidden sm:inline text-white/65">Move pointer to tilt</span>
@@ -88,8 +88,8 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
           )}
 
           {/* Badges on image */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-            <div>
+          <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 sm:bottom-4 sm:left-4 sm:right-4">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="bg-emerald-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
                   {ground.sport}
@@ -98,17 +98,17 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
                   {ground.city}
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-white">{ground.name}</h2>
-              <p className="text-xs text-slate-300 flex items-center gap-1 mt-1">
-                <MapPin size={13} className="text-emerald-400" />
-                {ground.address}
+              <h2 className="line-clamp-2 text-base font-black text-white sm:text-2xl">{ground.name}</h2>
+              <p className="mt-1 flex items-start gap-1 break-words text-[10px] text-slate-200 sm:text-xs">
+                <MapPin size={13} className="mt-0.5 shrink-0 text-emerald-400" />
+                <span className="line-clamp-2">{ground.address}</span>
               </p>
             </div>
 
-            <div className="text-right bg-slate-950/80 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/10 shrink-0">
-              <span className="text-[10px] text-slate-400 block uppercase font-semibold">Rate</span>
-              <span className="text-lg font-black text-emerald-400">
-                PKR {ground.hourlyRate.toLocaleString()} <span className="text-xs font-normal text-slate-300">/ hr</span>
+            <div className="shrink-0 rounded-xl border border-white/10 bg-slate-950/80 px-2 py-1.5 text-right backdrop-blur-md sm:px-3.5 sm:py-2">
+              <span className="block text-[9px] font-semibold uppercase text-slate-300 sm:text-[10px]">Rate</span>
+              <span className="text-sm font-black text-emerald-300 sm:text-lg">
+                PKR {ground.hourlyRate.toLocaleString()} <span className="text-[10px] font-normal text-slate-200 sm:text-xs">/ hr</span>
               </span>
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
         )}
 
         {/* Modal Body Content */}
-        <div className="p-6 space-y-6 max-h-[55vh] overflow-y-auto">
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:space-y-6 sm:p-6">
           {/* Description */}
           <div>
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Facility Overview</h3>
@@ -145,7 +145,7 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
           </div>
 
           {/* Operating Hours & Rating */}
-          <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+          <div className="grid grid-cols-1 gap-3 rounded-xl border border-slate-100 bg-slate-50 p-3.5 min-[380px]:grid-cols-2">
             <div className="flex items-center gap-2.5">
               <Clock className="text-emerald-600" size={18} />
               <div>
@@ -201,16 +201,16 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <div className="flex flex-col gap-3 border-t border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span className="text-xs text-slate-500 block">Total for 1 hour:</span>
             <span className="text-base font-extrabold text-slate-900">PKR {ground.hourlyRate.toLocaleString()}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center gap-2 sm:w-auto">
             <button
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition"
+              className="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 sm:flex-none"
             >
               Close
             </button>
@@ -219,7 +219,7 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
                 onClose();
                 onBookGround(ground);
               }}
-              className="px-6 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/30 transition flex items-center gap-1.5"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/30 transition hover:bg-emerald-700 sm:flex-none sm:px-6"
             >
               <Calendar size={15} />
               <span>Book Slot Now</span>

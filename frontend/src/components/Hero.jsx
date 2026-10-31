@@ -117,7 +117,7 @@ export default function Hero({
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold tracking-wider uppercase shadow-xs">
+          <div className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/20 px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wider text-emerald-300 shadow-xs sm:px-3.5 sm:py-1.5 sm:text-xs">
             <Trophy size={13} className="text-emerald-400" />
             <span>Sports Facility Discovery & Booking Platform</span>
           </div>

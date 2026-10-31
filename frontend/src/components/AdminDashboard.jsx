@@ -194,7 +194,7 @@ export default function AdminDashboard({ onRefreshGrounds }) {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-3 sm:gap-3">
             <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700/80 text-center">
               <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">Pending Review</span>
               <span className="text-2xl font-black text-amber-300">{pendingCount}</span>
@@ -235,8 +235,8 @@ export default function AdminDashboard({ onRefreshGrounds }) {
       )}
 
       {/* Admin Tabs */}
-      <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <button
             onClick={() => setAdminTab('requests')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 ${
@@ -293,8 +293,8 @@ export default function AdminDashboard({ onRefreshGrounds }) {
       {adminTab === 'requests' && (
         <div className="space-y-4">
           {/* Filters Bar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+          <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div className="flex w-full min-w-0 flex-1 items-center gap-2 sm:min-w-[200px]">
               <Search size={16} className="text-slate-400" />
               <input
                 type="text"
@@ -305,7 +305,7 @@ export default function AdminDashboard({ onRefreshGrounds }) {
               />
             </div>
 
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex max-w-full flex-wrap items-center gap-2 text-xs">
               <span className="text-slate-500 font-semibold">Status:</span>
               {['All', 'pending', 'approved', 'rejected'].map(st => (
                 <button

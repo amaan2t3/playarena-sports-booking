@@ -211,20 +211,20 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/80 p-2 backdrop-blur-sm sm:p-4">
+      <div className="relative flex max-h-[calc(100dvh-1rem)] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl animate-in fade-in zoom-in duration-200 sm:max-h-[calc(100dvh-2rem)] sm:rounded-3xl">
         {/* Header */}
-        <div className="p-5 sm:p-6 bg-slate-900 text-white flex items-center justify-between">
-          <div>
+        <div className="flex shrink-0 items-center justify-between gap-3 bg-slate-900 p-4 text-white sm:p-6">
+          <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+              <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400 sm:text-xs">
                 <Calendar size={14} /> Slot Reservation
               </span>
-              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+              <span className="rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2 py-0.5 text-[9px] font-semibold text-emerald-300 sm:text-[10px]">
                 Pay at Ground
               </span>
             </div>
-            <h2 className="text-xl font-black text-white">
+            <h2 className="text-lg font-black text-white sm:text-xl">
               {submitSuccess ? 'Booking Request Sent! ✅' : 'Book Your Slot'}
             </h2>
           </div>
@@ -235,7 +235,7 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
 
         {/* ============ SUCCESS SCREEN ============ */}
         {submitSuccess ? (
-          <div className="p-6 sm:p-8 text-center space-y-5">
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 text-center sm:p-8">
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto ring-8 ring-emerald-50">
               <CheckCircle2 size={36} />
             </div>
@@ -253,7 +253,7 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
                 <span className="text-slate-500">Booking Ref:</span>
                 <span className="font-mono font-bold text-slate-900">{submitSuccess.id}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-wrap justify-between gap-x-3 gap-y-1">
                 <span className="text-slate-500">Date & Time:</span>
                 <span className="font-semibold text-slate-900">{submitSuccess.date} • {submitSuccess.startTime} – {submitSuccess.endTime}</span>
               </div>
@@ -261,7 +261,7 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
                 <span className="text-slate-500">Total Fee:</span>
                 <span className="font-bold text-emerald-700 text-sm">PKR {submitSuccess.totalAmount?.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between items-center pt-1 border-t border-slate-200/80">
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-200/80">
                 <span className="text-slate-500">Status:</span>
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold uppercase tracking-wider text-[10px]">
                   <Hourglass size={11} /> Pending Admin Approval
@@ -320,7 +320,7 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
           </div>
         ) : (
           /* ============ BOOKING FORM ============ */
-          <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
             {/* Ground Selector */}
             {groundsList && groundsList.length > 1 && (
               <div>
@@ -342,15 +342,15 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
 
             {/* Ground Info */}
             {selectedGround && (
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-bold text-slate-900">{selectedGround.name}</div>
+              <div className="flex flex-col gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3.5 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+                <div className="min-w-0">
+                  <div className="break-words text-sm font-bold text-slate-900">{selectedGround.name}</div>
                   <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                     <MapPin size={12} className="text-emerald-600" />
                     <span>{selectedGround.city} • {selectedGround.sport}</span>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-left min-[420px]:text-right">
                   <span className="text-xs text-slate-400 block font-medium">Hourly Rate</span>
                   <span className="text-sm font-extrabold text-emerald-700">PKR {selectedGround.hourlyRate?.toLocaleString()}</span>
                 </div>
@@ -512,13 +512,13 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
             </div>
 
             {/* Pricing Summary */}
-            <div className="p-4 rounded-2xl bg-emerald-950 text-white space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="space-y-3 rounded-2xl bg-emerald-950 p-3 text-white sm:p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <span className="text-xs text-emerald-300 block font-medium">Estimated Match Fee</span>
                   <span className="text-xs text-slate-400">{durationHours} hr × PKR {selectedGround?.hourlyRate?.toLocaleString()}</span>
                 </div>
-                <span className="text-2xl font-black text-emerald-400">PKR {totalCost.toLocaleString()}</span>
+                <span className="text-xl font-black text-emerald-400 sm:text-2xl">PKR {totalCost.toLocaleString()}</span>
               </div>
               <div className="pt-2 border-t border-emerald-900 flex items-start gap-2.5 text-xs text-emerald-200">
                 <Banknote size={16} className="text-emerald-400 shrink-0 mt-0.5" />
@@ -534,18 +534,18 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+                className="rounded-xl px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:w-auto"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || (availabilityResult && !availabilityResult.isAvailable)}
-                className={`px-6 py-2.5 rounded-xl text-xs font-bold text-white shadow-md transition flex items-center gap-2 ${
+                className={`flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-xs font-bold text-white shadow-md transition ${
                   availabilityResult && !availabilityResult.isAvailable
                     ? 'bg-slate-400 cursor-not-allowed'
                     : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/30'

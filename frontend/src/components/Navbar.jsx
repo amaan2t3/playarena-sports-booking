@@ -11,10 +11,10 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
       {/* Admin Quick-Access Bar (only for admin switching) */}
       <div className="bg-emerald-950 text-emerald-100 text-xs py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="font-medium text-emerald-300">PlayArena Live:</span>
-            <span>Premier verified sports arenas in Rawalpindi & Skardu — No login required to book</span>
+            <span className="hidden sm:inline">Premier verified sports arenas in Rawalpindi & Skardu — No login required to book</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -43,32 +43,33 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
       </div>
 
       {/* Main Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-2 py-2 xl:flex-row xl:items-center xl:justify-between xl:py-0">
           {/* Logo & City Selector */}
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex min-w-0 items-center justify-between gap-3 sm:gap-6">
             <button
+              aria-label="Explore grounds"
               onClick={() => setActiveTab('explore')}
-              className="flex items-center gap-2.5 sm:gap-3 text-left group focus:outline-hidden"
+              className="flex min-w-0 items-center gap-2 sm:gap-3 text-left group focus:outline-hidden"
               title="PlayArena - Return to Explore"
             >
               <img
                 src={logoImg}
                 alt="PlayArena Sports Booking"
-                className="h-10 sm:h-11 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+                className="h-9 w-auto shrink-0 object-contain transition-transform duration-200 group-hover:scale-105 sm:h-11"
               />
-              <div>
+              <div className="min-w-0">
                 <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900 flex items-center leading-none">
                   Play<span className="text-emerald-600">Arena</span>
                 </span>
-                <span className="block text-[10px] uppercase tracking-wider font-bold text-emerald-700 mt-0.5">
+                <span className="block text-[9px] uppercase tracking-wider font-bold text-emerald-700 mt-0.5 sm:text-[10px]">
                   Rawalpindi • Skardu
                 </span>
               </div>
             </button>
 
             {/* City Dropdown Switcher */}
-            <div className="hidden md:flex items-center bg-slate-100/90 rounded-full p-1 border border-slate-200/60">
+            <div className="hidden 2xl:flex items-center bg-slate-100/90 rounded-full p-1 border border-slate-200/60">
               <span className="px-2 text-xs font-medium text-slate-500 flex items-center gap-1">
                 <MapPin size={13} className="text-emerald-600" /> City:
               </span>
@@ -89,22 +90,23 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
           </div>
 
           {/* Navigation Tabs */}
-          <nav className="flex items-center gap-1 sm:gap-2">
+          <nav aria-label="Main navigation" className="flex w-full min-w-0 items-center gap-1 overflow-x-auto pb-0.5 sm:gap-2 xl:w-auto">
             <button
               onClick={() => setActiveTab('explore')}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 ${
                 activeTab === 'explore'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
               <Compass size={16} />
-              <span>Explore Grounds</span>
+              <span className="hidden sm:inline">Explore Grounds</span>
             </button>
 
             <button
+              aria-label="Booking rules"
               onClick={() => setActiveTab('rules')}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 ${
                 activeTab === 'rules'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -115,33 +117,36 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
             </button>
 
             <button
+              aria-label="Reviews"
               onClick={() => setActiveTab('reviews')}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 ${
                 activeTab === 'reviews'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
               <Star size={16} className={activeTab === 'reviews' ? 'fill-emerald-600' : ''} />
-              <span>Reviews</span>
+              <span className="hidden sm:inline">Reviews</span>
             </button>
 
             <button
+              aria-label="My bookings"
               onClick={() => setActiveTab('my-bookings')}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 ${
                 activeTab === 'my-bookings'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
               <Calendar size={16} />
-              <span>My Bookings</span>
+              <span className="hidden sm:inline">My Bookings</span>
             </button>
 
             {/* Admin Panel button — always shown, login gated inside */}
             <button
+              aria-label="Admin panel"
               onClick={() => setActiveTab('admin')}
-              className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+              className={`shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 ${
                 activeTab === 'admin'
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : isAdmin
@@ -150,7 +155,7 @@ export default function Navbar({ activeTab, setActiveTab, selectedCity, setSelec
               }`}
             >
               <ShieldCheck size={16} />
-              <span>Admin Panel</span>
+              <span className="hidden sm:inline">Admin Panel</span>
             </button>
           </nav>
         </div>

@@ -42,62 +42,8 @@ const INITIAL_REVIEWS = [
     likes: 31,
     verified: true
   },
-  {
-    id: 3,
-    name: 'Ayesha Siddiqui',
-    role: 'Singles Tennis Player',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
-    sport: 'Tennis',
-    ground: 'Bahria Town Clay Tennis Club',
-    city: 'Rawalpindi',
-    rating: 5,
-    date: '3 days ago',
-    comment: 'The clay court was freshly rolled and lined. Being able to choose an exact 1.5-hour duration instead of being forced into fixed slots is a huge game changer. Very well organized!',
-    likes: 18,
-    verified: true
-  },
-  {
-    id: 4,
-    name: 'Zubair Khan',
-    role: 'Weekend Box Cricket League',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
-    sport: 'Cricket',
-    ground: 'Commercial Market Box Cricket',
-    city: 'Rawalpindi',
-    rating: 5,
-    date: '5 days ago',
-    comment: 'Booked a 2-hour late night slot for our corporate team match. Bowling machine worked great and high netting prevented ball loss. Paying directly on arrival made splitting money among team members so easy.',
-    likes: 19,
-    verified: true
-  },
-  {
-    id: 5,
-    name: 'Dr. Farooq Shah',
-    role: 'Badminton Enthusiast',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80',
-    sport: 'Badminton',
-    ground: 'Karakoram Indoor Badminton Arena',
-    city: 'Skardu',
-    rating: 5,
-    date: '1 week ago',
-    comment: 'Authentic shock-absorbing BWF synthetic mats that protect your knees. Clean changing rooms and heating during cold evenings. Highly recommended for sports lovers visiting Skardu!',
-    likes: 15,
-    verified: true
-  },
-  {
-    id: 6,
-    name: 'Usman Malik',
-    role: 'Satellite Town Football Club',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80',
-    sport: 'Football',
-    ground: 'Satellite Town Sports Complex',
-    city: 'Rawalpindi',
-    rating: 4,
-    date: '1 week ago',
-    comment: 'Turf grass is well kept and bibs/balls were provided by the staff. Admin verified availability promptly so no team was waiting on the sideline. Will definitely book weekly.',
-    likes: 12,
-    verified: true
-  }
+ 
+  
 ];
 
 export default function ReviewsSection({ onBookGround }) {

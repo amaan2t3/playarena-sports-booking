@@ -44,7 +44,7 @@ export default function Filters({
         </div>
 
         {/* City Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/60 self-start md:self-auto">
+        <div className="flex max-w-full flex-wrap items-center gap-1.5 rounded-xl border border-slate-200/60 bg-slate-100 p-1 self-start md:self-auto">
           <span className="text-xs font-semibold text-slate-500 px-2 flex items-center gap-1">
             <MapPin size={13} className="text-emerald-600" /> City:
           </span>
@@ -52,7 +52,7 @@ export default function Filters({
             <button
               key={city}
               onClick={() => setSelectedCity(city)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+              className={`rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition sm:px-3 sm:text-xs ${
                 selectedCity === city
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
