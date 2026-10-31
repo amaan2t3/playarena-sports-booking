@@ -1,112 +1,340 @@
-# PlayArena — Sports Facility Discovery & Booking Platform
+ # 🏟️ PlayArena — Sports Ground Booking System
 
-**PlayArena** is a sports discovery and reservation platform tailored for grounds, turfs, and sports arenas across **Rawalpindi** and **Skardu**.
+<p align="center">
+  <strong>Your Game. Our Grounds.</strong>
+</p>
 
----
+<p align="center">
+  A modern sports ground booking platform built with the MERN Stack.
+  Discover sports facilities, request bookings, and get ready to play.
+</p>
 
-## 🌟 Core Highlights & Booking Rules
-
-1. **Admin Approval Workflow**
-   - All booking requests initially sit in `PENDING` status upon submission.
-   - An administrator verifies ground availability, lighting, and readiness before clicking **Approve** or **Reject**.
-   - **Double-booking prevention:** The system mathematically checks slot intervals (`[startTime, endTime]`) and prevents overlapping confirmed bookings for the same facility.
-
-2. **Pay at the Ground (No Online Gateway in v1)**
-   - No payment gateway friction or upfront credit card charges.
-   - Players select their slot and pay in cash or on-site at the ground counter upon arrival.
-   - Ground staff and admins can mark bookings as `Paid at Ground` directly from the dashboard.
-
-3. **Flexible Duration & Slot Availability**
-   - Players choose their desired match date, start time, and flexible duration (`1 hr`, `1.5 hrs`, `2 hrs`, `2.5 hrs`, `3 hrs`, `4 hrs`).
-   - The system calculates the exact end time and match fee based on the facility's hourly rate.
-
-4. **Multi-Sport Support**
-   - ⚽ **Football / Futsal**: 5G FIFA-grade turf arenas
-   - 🎾 **Tennis**: Clay courts & synthetic hard courts
-   - 🏏 **Cricket**: AstroTurf pitches & box cricket with bowling machines
-   - 🏸 **Badminton**: BWF-approved synthetic mats & indoor halls
-   - 🏓 **Other Sports**: Multi-sport gyms, table tennis, volleyball
-
-5. **Supported Hubs**
-   - **Rawalpindi**: Commercial Market, Satellite Town, Chaklala, Bahria Town, Ayub Park.
-   - **Skardu**: Airport Road, Lower Kachura (Shangrila), Yadgar Chowk, Aliabad.
+<p align="center">
+  <img src="https://img.shields.io/badge/Project-Under%20Development-orange?style=for-the-badge" alt="Project Status" />
+  <img src="https://img.shields.io/badge/Stack-MERN-16A34A?style=for-the-badge" alt="MERN Stack" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License" />
+</p>
 
 ---
+
+## 📖 About the Project
+
+**PlayArena** is a full-stack sports ground booking web application designed to simplify the process of finding and reserving sports facilities.
+
+The platform aims to connect players and sports enthusiasts with available sports grounds in **Rawalpindi and Skardu, Pakistan**.
+
+Users will be able to explore facilities, filter by location and sport, choose their preferred booking date and duration, and submit booking requests for administrator approval.
+
+PlayArena is being developed as a practical real-world MERN Stack project with a focus on usability, responsive design, and efficient booking management.
+
+## 🎯 Project Objectives
+
+- Make sports facility discovery easier.
+- Simplify the ground booking process.
+- Support multiple sports and locations.
+- Provide flexible booking durations.
+- Allow administrators to manage booking requests.
+- Build a scalable and responsive booking platform.
+
+## 📍 Supported Locations
+
+| City | Country |
+|---|---|
+| Rawalpindi | Pakistan 🇵🇰 |
+| Skardu | Pakistan 🇵🇰 |
+
+## ⚽ Supported Sports
+
+| Sport | Facility Type |
+|---|---|
+| Football | Football grounds and futsal arenas |
+| Cricket | Cricket grounds and practice facilities |
+| Tennis | Tennis courts |
+| Badminton | Indoor badminton courts |
+| Other Sports | Multi-purpose sports facilities |
+
+## ✨ Key Features
+
+### 👤 Customer Features
+- Browse available sports facilities.
+- Search grounds by name.
+- Filter facilities by city and sport.
+- View ground details and pricing.
+- Select preferred booking dates.
+- Choose flexible booking durations.
+- Submit booking requests.
+- Track booking status (planned).
+- Pay at the ground.
+
+### 🔐 Administrator Features
+- Secure administrator authentication (planned).
+- Add, update and delete sports facilities.
+- Manage ground information and pricing.
+- View customer booking requests.
+- Approve or reject booking requests.
+- Manage booking statuses.
+- Monitor reservations through an admin dashboard.
+
+### 📅 Booking System
+- Flexible booking durations.
+- Date and time selection.
+- Automatic estimated price calculation.
+- Admin approval workflow.
+- Booking conflict prevention.
+- Pay-at-ground payment method.
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React 19 + Vite + Tailwind CSS + Lucide Icons
-- **Backend**: Node.js + Express.js (REST API, JWT Authentication, bcryptjs)
-- **Database**: MongoDB Atlas via Mongoose with automatic zero-configuration in-memory/JSON store fallback
-- **Deployment**: Vercel ready (Frontend) & Render ready (Backend)
+### Frontend
+<p>
+  <img src="https://skillicons.dev/icons?i=react,vite,tailwind,js,html,css" alt="Frontend technologies" />
+</p>
 
----
+- React.js
+- Vite
+- Tailwind CSS
+- JavaScript
+- Lucide React Icons
 
-## 🔑 Demo & Test Accounts
+### Backend
+<p>
+  <img src="https://skillicons.dev/icons?i=nodejs,express" alt="Backend technologies" />
+</p>
 
-You can test without signing up using the **1-Click Demo Accounts** in the top navigation banner, or with the following credentials:
+- Node.js
+- Express.js
+- RESTful APIs
 
+<<<<<<< HEAD
 | Role | Email | Password | Permissions |
 |---|---|---|---|
  
 | **Player / Customer** | `user@playarena.pk` | `user123` | Browse grounds, filter by city & sport, submit booking requests, track booking status |
+=======
+### Database & Authentication
+<p>
+  <img src="https://skillicons.dev/icons?i=mongodb" alt="MongoDB" />
+</p>
+>>>>>>> 0fea13f (Add professional project README)
 
----
+- MongoDB
+- Mongoose
+- JSON Web Tokens (JWT)
+- bcrypt password hashing
 
-## 🚀 Getting Started Locally
+### Development Tools
+<p>
+  <img src="https://skillicons.dev/icons?i=git,github,vscode,postman" alt="Development tools" />
+</p>
 
-### 1. Backend Server
+- Git and GitHub
+- Visual Studio Code
+- Postman
+- MongoDB Atlas
+
+## 🎨 Brand Identity
+
+| Element | Value |
+|---|---|
+| Brand Name | PlayArena |
+| Tagline | Your Game. Our Grounds. |
+| Primary Green | `#14532D` |
+| Sports Green | `#16A34A` |
+| Fresh Mint | `#86EFAC` |
+| Light Green | `#DCFCE7` |
+| Background | `#F8FAF8` |
+| Main Text | `#172B22` |
+
+The interface follows a clean, modern sports-inspired design with green accents, light backgrounds, and responsive layouts.
+
+## 📸 Screenshots
+
+> Screenshots will be added as the project development progresses.
+
+| Homepage | Sports Facilities |
+|---|---|
+| Coming soon | Coming soon |
+
+| Booking Form | Admin Dashboard |
+|---|---|
+| Coming soon | Coming soon |
+
+## 🚀 Getting Started
+
+Follow these instructions to run the frontend locally.
+
+### Prerequisites
+
+Make sure you have installed:
+
+- Node.js (LTS)
+- npm
+- Git
+- Visual Studio Code (recommended)
+
+### 1. Clone the Repository
+
 ```bash
-cd backend
+git clone https://github.com/amaan2t3/playarena-sports-booking.git
+```
+
+### 2. Navigate to the Project
+
+```bash
+cd playarena-sports-booking
+```
+
+### 3. Install Dependencies
+
+```bash
 npm install
+```
+
+### 4. Start the Development Server
+
+```bash
 npm run dev
 ```
-Backend will start on `http://localhost:5000` with pre-seeded arenas in Rawalpindi and Skardu.
 
-### 2. Frontend Application
-```bash
-cd frontend
-npm install
-npm run dev
+### 5. Open in Browser
+
+```text
+http://localhost:5173
 ```
-Frontend will start on `http://localhost:5173`.
+
+> Backend and MongoDB setup instructions will be added when the backend is implemented.
+
+## 📁 Planned Project Structure
+
+```text
+playarena-sports-booking/
+│
+├── public/
+│
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── layouts/
+│   ├── hooks/
+│   ├── services/
+│   ├── context/
+│   ├── utils/
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
+│
+├── server/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── utils/
+│   ├── .env.example
+│   └── server.js
+│
+├── .gitignore
+├── index.html
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+## 🔄 Booking Workflow
+
+```text
+Customer
+   |
+   v
+Browse Sports Facilities
+   |
+   v
+Select Location and Sport
+   |
+   v
+Choose Ground, Date and Duration
+   |
+   v
+Submit Booking Request
+   |
+   v
+Pending Admin Approval
+   |
+   +-------------------+
+   |                   |
+   v                   v
+  Approved           Rejected
+   |
+   v
+Pay at the Ground
+   |
+   v
+Enjoy Your Game!
+```
+
+## 🗺️ Development Roadmap
+
+- [x] Project name and brand identity
+- [x] Initial React + Vite setup
+- [x] Tailwind CSS configuration
+- [x] Initial homepage and facility listings
+- [x] Search and filter interface
+- [x] Frontend booking form demonstration
+- [ ] Express.js backend setup
+- [ ] MongoDB database integration
+- [ ] Ground management APIs
+- [ ] Booking management APIs
+- [ ] Customer authentication
+- [ ] Admin authentication and dashboard
+- [ ] Booking approval and rejection
+- [ ] Booking availability validation
+- [ ] Customer booking history
+- [ ] Testing and bug fixing
+- [ ] Deployment
+
+## 🔒 Environment Variables
+
+The backend will use environment variables to protect sensitive configuration.
+
+Example `.env.example`:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_secure_random_secret
+CLIENT_URL=http://localhost:5173
+```
+
+Never commit your actual `.env` file or database credentials to GitHub.
+
+## 🤝 Contributing
+
+Contributions, suggestions and improvements are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes.
+4. Commit your changes.
+5. Open a Pull Request.
+
+## 👨‍💻 Developer
+
+**Amaan Ullah**
+
+BS Information Technology Student | MERN Stack Developer
+
+- GitHub: [@amaan2t3](https://github.com/amaan2t3)
+- Portfolio: [Visit Portfolio](https://portfolio-aman-beryl.vercel.app/)
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
-## 📡 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Create new player account
-- `POST /api/auth/login` - Sign in and receive JWT token
-- `GET /api/auth/me` - Get profile of authenticated user
-
-### Grounds & Arenas
-- `GET /api/grounds?city=Rawalpindi&sport=Football&search=turf` - List and filter facilities
-- `GET /api/grounds/:id` - Get ground details
-- `GET /api/grounds/:id/availability?date=YYYY-MM-DD&startTime=18:00&durationHours=2` - Check slot conflict
-- `POST /api/grounds` - (Admin only) Register new arena
-- `DELETE /api/grounds/:id` - (Admin only) Remove arena
-
-### Bookings
-- `GET /api/bookings` - Retrieve booking requests (filtered by customer or status)
-- `POST /api/bookings` - Submit slot booking request (status defaults to `pending`)
-- `PATCH /api/bookings/:id/status` - (Admin only) Approve or reject booking
-- `PATCH /api/bookings/:id/payment` - (Admin only) Mark payment as `paid_at_ground`
-
----
-
-## 🚢 Production Deployment
-
-### Frontend on Vercel
-1. Set the root directory to `frontend`.
-2. Framework Preset: `Vite`.
-3. Set environment variable: `VITE_API_BASE_URL=https://your-backend-service.onrender.com/api`.
-
-### Backend on Render
-1. Set the root directory to `backend`.
-2. Build command: `npm install`.
-3. Start command: `node src/server.js`.
-4. Environment variables:
-   - `PORT=5000`
-   - `MONGODB_URI=your_mongodb_atlas_connection_string`
-   - `JWT_SECRET=your_secret_key`
+<p align="center">
+  <strong>🏟️ PlayArena — Your Game. Our Grounds.</strong>
+  <br />
+  <sub>Built with ❤️ in Pakistan 🇵🇰</sub>
+</p>
