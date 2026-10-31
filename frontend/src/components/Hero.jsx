@@ -79,9 +79,8 @@ export default function Hero({
       {HERO_BACKGROUNDS.map((bg, idx) => (
         <div
           key={bg.url}
-          className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out pointer-events-none ${
-            idx === currentBgIndex ? 'opacity-80 sm:opacity-85 scale-100' : 'opacity-0 scale-105'
-          }`}
+          className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out pointer-events-none ${idx === currentBgIndex ? 'opacity-80 sm:opacity-85 scale-100' : 'opacity-0 scale-105'
+            }`}
           style={{
             backgroundImage: `url('${bg.url}')`
           }}
@@ -125,7 +124,8 @@ export default function Hero({
           </h1>
 
           <p className="text-xs sm:text-sm md:text-base text-slate-100 max-w-2xl mx-auto font-normal leading-relaxed drop-shadow-sm">
-            FIFA standard 5G futsal, clay tennis courts, scenic mountain cricket pavilions, and tournament badminton halls. 
+            At PlayArena, we bring you the best sports facilities.
+            Futsal, clay tennis courts, scenic mountain cricket pavilions, and tournament badminton halls.
             Choose your flexible slot, reserve with ease, and pay directly at the ground.
           </p>
 
@@ -137,16 +137,14 @@ export default function Hero({
                 type="button"
                 key={bg.title}
                 onClick={() => setCurrentBgIndex(idx)}
-                className={`transition-all duration-300 rounded-full flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold py-0.5 sm:py-1 px-2.5 sm:px-3 ${
-                  idx === currentBgIndex
+                className={`transition-all duration-300 rounded-full flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold py-0.5 sm:py-1 px-2.5 sm:px-3 ${idx === currentBgIndex
                     ? 'bg-emerald-500/35 text-emerald-300 border border-emerald-400/60 shadow-xs scale-105'
                     : 'bg-black/60 text-slate-300 border border-white/20 hover:bg-black/80 hover:text-white'
-                }`}
+                  }`}
               >
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    idx === currentBgIndex ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'
-                  }`}
+                  className={`w-1.5 h-1.5 rounded-full ${idx === currentBgIndex ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'
+                    }`}
                 />
                 <span>{bg.sport}</span>
               </button>
