@@ -1,14 +1,33 @@
 import React, { useState } from 'react';
-import { X, MapPin, Clock, Star, ShieldCheck, Check, Banknote, Calendar } from 'lucide-react';
+import { X, MapPin, Clock, Star, Check, Banknote, Calendar, ChevronLeft, ChevronRight, Move3D } from 'lucide-react';
 
 export default function GroundDetailModal({ ground, onClose, onBookGround }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [viewTilt, setViewTilt] = useState({ x: 0, y: 0 });
 
   if (!ground) return null;
 
+  const images = ground.images?.length
+    ? ground.images
+    : ['https://images.unsplash.com/photo-1529900241451-b69c45f47055?auto=format&fit=crop&w=1400&q=85'];
+  const changeImage = (direction) => {
+    setActiveImageIndex((index) => (index + direction + images.length) % images.length);
+    setViewTilt({ x: 0, y: 0 });
+  };
+  const handleViewPointerMove = (event) => {
+    if (event.pointerType === 'touch') return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    setViewTilt({
+      x: (0.5 - y) * 10,
+      y: (x - 0.5) * 12
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-white rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -17,14 +36,56 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
           <X size={18} />
         </button>
 
-        {/* Gallery Image */}
-        <div className="relative h-64 sm:h-72 w-full bg-slate-900">
-          <img
-            src={ground.images?.[activeImageIndex] || ground.images?.[0]}
-            alt={ground.name}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30 pointer-events-none" />
+        {/* Interactive perspective preview using the ground photos already provided. */}
+        <div
+          className="relative h-72 sm:h-[26rem] w-full overflow-hidden bg-slate-950"
+          onPointerMove={handleViewPointerMove}
+          onPointerLeave={() => setViewTilt({ x: 0, y: 0 })}
+        >
+          <div
+            className="absolute inset-0 transition-transform duration-300 ease-out"
+            style={{
+              transform: `perspective(1200px) rotateX(${viewTilt.x}deg) rotateY(${viewTilt.y}deg) scale(1.08)`,
+              transformStyle: 'preserve-3d'
+            }}
+          >
+            <img
+              src={images[activeImageIndex]}
+              alt={`${ground.name} - view ${activeImageIndex + 1}`}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-black/35 pointer-events-none" />
+
+          <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full border border-white/20 bg-slate-950/55 px-3 py-2 text-xs font-semibold text-white backdrop-blur-md">
+            <Move3D size={15} className="text-emerald-300" />
+            <span>3D-style photo preview</span>
+            <span className="hidden sm:inline text-white/65">Move pointer to tilt</span>
+          </div>
+
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() => changeImage(-1)}
+                aria-label="Show previous ground view"
+                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/25 bg-slate-950/55 p-2.5 text-white backdrop-blur-md transition hover:bg-slate-950/80"
+              >
+                <ChevronLeft size={22} />
+              </button>
+              <button
+                type="button"
+                onClick={() => changeImage(1)}
+                aria-label="Show next ground view"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/25 bg-slate-950/55 p-2.5 text-white backdrop-blur-md transition hover:bg-slate-950/80"
+              >
+                <ChevronRight size={22} />
+              </button>
+              <span className="absolute top-5 right-16 rounded-full bg-slate-950/55 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
+                View {activeImageIndex + 1} of {images.length}
+              </span>
+            </>
+          )}
 
           {/* Badges on image */}
           <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
@@ -54,12 +115,17 @@ export default function GroundDetailModal({ ground, onClose, onBookGround }) {
         </div>
 
         {/* Image Thumbnail Selector */}
-        {ground.images && ground.images.length > 1 && (
+        {images.length > 1 && (
           <div className="flex gap-2 p-3 bg-slate-100 border-b border-slate-200 overflow-x-auto">
-            {ground.images.map((img, idx) => (
+            {images.map((img, idx) => (
               <button
                 key={idx}
-                onClick={() => setActiveImageIndex(idx)}
+                onClick={() => {
+                  setActiveImageIndex(idx);
+                  setViewTilt({ x: 0, y: 0 });
+                }}
+                aria-label={`Show ground view ${idx + 1}`}
+                aria-pressed={activeImageIndex === idx}
                 className={`relative h-14 w-20 rounded-lg overflow-hidden shrink-0 border-2 transition ${
                   activeImageIndex === idx ? 'border-emerald-600 scale-105' : 'border-transparent opacity-70 hover:opacity-100'
                 }`}

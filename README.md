@@ -308,6 +308,12 @@ CLIENT_URL=http://localhost:5173
 
 Never commit your actual `.env` file or database credentials to GitHub.
 
+## 🚀 Vercel Deployment
+
+The repository root contains the Vercel configuration for both the frontend and API. In the Vercel project settings, set **Root Directory** to the repository root (`.`), then redeploy. The frontend calls the same-origin `/api` endpoints, which are handled by the serverless Express API.
+
+The grounds endpoint uses the included seed data when MongoDB is not configured. The current store is in-memory, so configure persistent storage before relying on bookings or admin changes in production.
+
 ## 🤝 Contributing
 
 Contributions, suggestions and improvements are welcome.

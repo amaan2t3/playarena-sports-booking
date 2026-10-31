@@ -4,12 +4,18 @@ import logoImg from '../assets/PlayArena Sports Booking Logo.png';
 
 const HERO_BACKGROUNDS = [
   {
-    url: 'https://images.unsplash.com/photo-1529900241451-b69c45f47055?auto=format&fit=crop&w=2000&q=80',
+    url: 'https://i.pinimg.com/736x/e9/7a/c9/e97ac96fb8f174a604c6c3d0993576f0.jpg',
     title: '5G FIFA Futsal Pitch',
     sport: 'Football'
   },
+
   {
-    url: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=2000&q=80',
+    url: 'https://i.pinimg.com/736x/b2/d7/51/b2d751501bc7e5f25a5f7d99516df84c.jpg',
+    title: 'Rawalpindi Cricket Stadium',
+    sport: 'Rawalpindi'
+  },
+  {
+    url: 'https://i.pinimg.com/736x/4a/d1/93/4ad193e18f59aa889d9fcbb4640ae64d.jpg',
     title: 'Alpine Mountain Stadium',
     sport: 'Skardu'
   },

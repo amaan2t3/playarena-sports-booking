@@ -104,7 +104,6 @@ export default function GroundCard({ ground, onSelectGround }) {
           </span>
         </div>
 
-        {/* Primary Action Button Requested: View Ground and Facility */}
         <button
           onClick={() => onSelectGround(ground)}
           className="w-full text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl transition shadow-sm shadow-emerald-600/30 flex items-center justify-center gap-2 group/btn active:scale-[0.98]"
