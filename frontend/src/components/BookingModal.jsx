@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { api } from '../services/api';
+import { getWhatsAppUrl, normalizeWhatsAppNumber } from '../services/whatsapp';
 import { useAuth } from '../context/AuthContext';
 import {
   X,
@@ -53,8 +54,7 @@ function addHours(time, hours) {
 
 /** Sends a WhatsApp message to admin */
 function sendWhatsAppToAdmin(adminPhone, booking) {
-  const clean = adminPhone.replace(/\D/g, '');
-  const msg = encodeURIComponent(
+  const msg =
     `🏟️ *New Booking Request - PlayArena*\n\n` +
     `📋 Ref: ${booking.id}\n` +
     `🏟️ Ground: ${booking.groundName} (${booking.groundCity})\n` +
@@ -66,16 +66,14 @@ function sendWhatsAppToAdmin(adminPhone, booking) {
     `⏰ Time: ${booking.startTime} – ${booking.endTime} (${booking.durationHours} hrs)\n` +
     `💰 Fee: PKR ${booking.totalAmount?.toLocaleString()}\n` +
     `🕐 Status: PENDING APPROVAL\n\n` +
-    `Please approve or reject via the Admin Panel.`
-  );
-  window.open(`https://wa.me/${clean}?text=${msg}`, '_blank');
+    `Please approve or reject via the Admin Panel.`;
+  const url = getWhatsAppUrl(adminPhone, msg);
+  if (url) window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 /** Sends a WhatsApp booking confirmation to the player's own phone */
 function sendWhatsAppToPlayer(playerPhone, booking) {
-  const clean = playerPhone.replace(/\D/g, '');
-  if (!clean || clean.length < 7) return; // skip if no valid number
-  const msg = encodeURIComponent(
+  const msg =
     `✅ *PlayArena – Booking Confirmation*\n\n` +
     `Hi ${booking.customerName}! 👋\n` +
     `Your slot request has been received.\n\n` +
@@ -88,12 +86,12 @@ function sendWhatsAppToPlayer(playerPhone, booking) {
     `💰 *Fee:* PKR ${booking.totalAmount?.toLocaleString()} (Pay at Ground)\n` +
     `🔔 *Status:* PENDING – Admin will confirm shortly\n\n` +
     `Please arrive 10 minutes early. Pay at the ground reception on arrival.\n` +
-    `Thank you for booking with PlayArena! 🏆`
-  );
-  window.open(`https://wa.me/${clean}?text=${msg}`, '_blank');
+    `Thank you for booking with PlayArena! 🏆`;
+  const url = getWhatsAppUrl(playerPhone, msg);
+  if (url) window.open(url, '_blank', 'noopener,noreferrer');
 }
 
-const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP || '+923001234567';
+const ADMIN_WHATSAPP = import.meta.env.VITE_ADMIN_WHATSAPP || '';
 
 export default function BookingModal({ ground, groundsList, initialDate, onClose, onBookingSuccess }) {
   const { user } = useAuth();
@@ -179,6 +177,11 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
       return;
     }
 
+    if (!normalizeWhatsAppNumber(customerPhone)) {
+      setSubmitError('Enter a valid WhatsApp number, such as 03001234567 or +923001234567.');
+      return;
+    }
+
     if (availabilityResult && !availabilityResult.isAvailable) {
       setSubmitError('This slot is already taken. Please pick another time.');
       return;
@@ -197,12 +200,6 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
       });
 
       setSubmitSuccess(response.data);
-
-      // 🔔 Send WhatsApp to admin
-      sendWhatsAppToAdmin(ADMIN_WHATSAPP, response.data);
-
-      // 🔔 Send WhatsApp confirmation to player (small delay so admin tab opens first)
-      setTimeout(() => sendWhatsAppToPlayer(customerPhone.trim(), response.data), 1000);
 
       if (onBookingSuccess) onBookingSuccess(response.data);
     } catch (err) {
@@ -277,8 +274,23 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
               <div className="p-3.5 rounded-xl bg-green-50 border border-green-200 text-left flex items-start gap-2.5">
                 <MessageCircle className="text-green-600 shrink-0 mt-0.5" size={16} />
                 <div className="text-xs text-green-900">
-                  <p className="font-bold">Admin Notified ✅</p>
-                  <p className="mt-0.5 text-green-700">Arena manager has received your booking via WhatsApp.</p>
+                  <p className="font-bold">Notify the Arena Manager</p>
+                  <p className="mt-0.5 text-green-700">
+                    WhatsApp will open with your booking details. Review the message and tap Send.
+                  </p>
+                  {normalizeWhatsAppNumber(ADMIN_WHATSAPP) ? (
+                    <button
+                      type="button"
+                      onClick={() => sendWhatsAppToAdmin(ADMIN_WHATSAPP, submitSuccess)}
+                      className="mt-2 font-bold text-green-800 underline"
+                    >
+                      Open WhatsApp
+                    </button>
+                  ) : (
+                    <p className="mt-2 font-semibold text-amber-800">
+                      The arena manager&apos;s WhatsApp number is not configured.
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -286,8 +298,10 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
               <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-left flex items-start gap-2.5">
                 <MessageCircle className="text-blue-600 shrink-0 mt-0.5" size={16} />
                 <div className="text-xs text-blue-900">
-                  <p className="font-bold">Your Confirmation ✅</p>
-                  <p className="mt-0.5 text-blue-700">Booking details sent to your WhatsApp ({submitSuccess.customerPhone}).</p>
+                  <p className="font-bold">Your Confirmation</p>
+                  <p className="mt-0.5 text-blue-700">
+                    Open WhatsApp to send the booking details to {submitSuccess.customerPhone}.
+                  </p>
                 </div>
               </div>
             </div>
@@ -299,7 +313,7 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
               className="w-full py-2.5 border-2 border-green-500 text-green-700 hover:bg-green-50 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2"
             >
               <MessageCircle size={15} />
-              Re-send Confirmation to My WhatsApp
+              Send Confirmation to My WhatsApp
             </button>
 
             <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-left flex items-start gap-3">
@@ -496,7 +510,7 @@ export default function BookingModal({ ground, groundsList, initialDate, onClose
                     required
                     value={customerPhone}
                     onChange={e => setCustomerPhone(e.target.value)}
-                    placeholder="+92 300 1234567"
+                    placeholder="03001234567 or +923001234567"
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 focus:bg-white"
                   />
                 </div>
