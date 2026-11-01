@@ -14,6 +14,15 @@ function getSafeErrorDetails(error) {
 }
 
 export default async function handler(req, res) {
+  const requestUrl = new URL(req.url || '/', 'http://localhost');
+  const apiPath = requestUrl.searchParams.get('__api_path');
+
+  if (!apiPath) {
+    return res.status(404).json({ message: 'API route not found.' });
+  }
+
+  requestUrl.searchParams.delete('__api_path');
+  req.url = `/api/${apiPath.replace(/^\/+/, '')}${requestUrl.search}`;
   initialization ??= initDatabase();
 
   try {
