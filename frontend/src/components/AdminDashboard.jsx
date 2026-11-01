@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { getBookingStatusMessage, getWhatsAppUrl } from '../services/whatsapp';
 import {
   ShieldCheck,
   CheckCircle,
@@ -35,6 +36,7 @@ export default function AdminDashboard({ onRefreshGrounds }) {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [whatsAppNotification, setWhatsAppNotification] = useState(null);
 
   // Filter state
   const [statusFilter, setStatusFilter] = useState('All');
@@ -71,19 +73,39 @@ export default function AdminDashboard({ onRefreshGrounds }) {
   }
 
   // Handle Approve or Reject
-  const handleUpdateStatus = async (id, status, reason = '') => {
+  const handleUpdateStatus = async (booking, status, reason = '') => {
     setErrorMsg('');
     setSuccessMsg('');
+    setWhatsAppNotification(null);
+    const message = getBookingStatusMessage(booking, status, reason);
+    const whatsAppUrl = getWhatsAppUrl(booking.customerPhone, message);
+    const whatsAppWindow = whatsAppUrl ? window.open('', '_blank') : null;
+
     try {
-      const res = await api.updateBookingStatus(id, {
+      const res = await api.updateBookingStatus(booking.id, {
         status,
         rejectionReason: reason,
         adminNotes: status === 'approved' ? 'Approved by Admin. Ready for match.' : 'Declined by Administrator.'
       });
       setSuccessMsg(res.message);
+      let popupOpened = false;
+      if (whatsAppWindow && !whatsAppWindow.closed && whatsAppUrl) {
+        try {
+          whatsAppWindow.opener = null;
+          whatsAppWindow.location.href = whatsAppUrl;
+          popupOpened = true;
+        } catch {
+          whatsAppWindow.close();
+        }
+      }
+      setWhatsAppNotification({
+        url: whatsAppUrl,
+        popupOpened
+      });
       await loadData();
       if (onRefreshGrounds) onRefreshGrounds();
     } catch (err) {
+      whatsAppWindow?.close();
       setErrorMsg(err.message || `Failed to update booking to ${status}`);
     }
   };
@@ -253,6 +275,30 @@ export default function AdminDashboard({ onRefreshGrounds }) {
             <span>{successMsg}</span>
           </div>
           <button onClick={() => setSuccessMsg('')} className="text-emerald-600 hover:text-emerald-900">×</button>
+        </div>
+      )}
+
+      {whatsAppNotification && (
+        <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-xs font-semibold text-green-900 sm:text-sm">
+          {whatsAppNotification.url ? (
+            <>
+              <p>
+                WhatsApp has the customer&apos;s status update ready. Review it and tap <strong>Send</strong> in WhatsApp.
+              </p>
+              {!whatsAppNotification.popupOpened && (
+                <a
+                  href={whatsAppNotification.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-block font-bold text-green-800 underline"
+                >
+                  Open WhatsApp message
+                </a>
+              )}
+            </>
+          ) : (
+            <p>Booking status updated, but the customer&apos;s phone number is not a valid WhatsApp number.</p>
+          )}
         </div>
       )}
 
@@ -451,7 +497,7 @@ export default function AdminDashboard({ onRefreshGrounds }) {
                     <div className="flex items-center gap-2">
                       {b.status !== 'approved' && (
                         <button
-                          onClick={() => handleUpdateStatus(b.id, 'approved')}
+                          onClick={() => handleUpdateStatus(b, 'approved')}
                           className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-xs shadow-emerald-600/30"
                         >
                           <CheckCircle size={14} />
@@ -463,7 +509,7 @@ export default function AdminDashboard({ onRefreshGrounds }) {
                         <button
                           onClick={() => {
                             const reason = window.prompt('Reason for rejecting booking request (optional):', 'Slot unavailable');
-                            if (reason !== null) handleUpdateStatus(b.id, 'rejected', reason);
+                            if (reason !== null) handleUpdateStatus(b, 'rejected', reason);
                           }}
                           className="px-3.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-red-200"
                         >

@@ -19,3 +19,21 @@ export function getWhatsAppUrl(phone, message) {
 
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
+
+export function getBookingStatusMessage(booking, status, rejectionReason = '') {
+  const isApproved = status === 'approved';
+  return [
+    `PlayArena booking ${isApproved ? 'approved' : 'rejected'}`,
+    '',
+    `Hi ${booking.customerName},`,
+    isApproved
+      ? 'Your booking request is approved.'
+      : 'Unfortunately, your booking request was rejected.',
+    `Ground: ${booking.groundName}`,
+    `City: ${booking.groundCity}`,
+    `Date: ${booking.date}`,
+    `Time: ${booking.startTime} - ${booking.endTime}`,
+    `Booking reference: ${booking.id}`,
+    ...(isApproved ? [] : rejectionReason ? [`Reason: ${rejectionReason}`] : [])
+  ].join('\n');
+}
